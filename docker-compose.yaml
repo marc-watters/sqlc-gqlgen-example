@@ -5,6 +5,14 @@ x-common-env: &database-env
   POSTGRES_USER    : ${DB_USER:?err}
   POSTGRES_PASSWORD: ${DB_PASS:?err}
 
+x-api-env: &api-env
+  API_HOST: ${API_HOST:?err}
+  API_PORT: ${API_PORT:?err}
+  DB_PORT : ${DB_PORT:?err}
+  DB_USER : ${DB_USER:?err}
+  DB_PASS : ${DB_PASS:?err}
+  DB_NAME : ${DB_NAME:?err}
+
 services:
   database:
     build:
@@ -26,3 +34,17 @@ services:
       retries: 3
       start_period: 30s
     restart: always
+
+  api:
+    build: api/
+    image: sqlc-gqlgen-example:api
+    pull_policy: build
+    environment:
+      DB_HOST: database
+      <<: *api-env
+    ports:
+      - ${API_PORT}:${API_PORT}
+    depends_on:
+      database:
+        condition: "service_started"
+    restart: no
