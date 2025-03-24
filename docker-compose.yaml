@@ -1,0 +1,28 @@
+x-common-env: &database-env
+  POSTGRES_HOST    : ${DB_HOST:?err}
+  POSTGRES_PORT    : ${DB_PORT:?err}
+  POSTGRES_DB      : ${DB_NAME:?err}
+  POSTGRES_USER    : ${DB_USER:?err}
+  POSTGRES_PASSWORD: ${DB_PASS:?err}
+
+services:
+  database:
+    build:
+      context: database/
+      args: *database-env
+    image: sqlc-gqlgen-example:database
+    pull_policy: build
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+    environment: *database-env
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - ${PWD}/database/init:/docker-entrypoint-initdb.d
+      - ${PWD}/database/data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 10s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    restart: always
