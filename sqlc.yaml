@@ -1,12 +1,1 @@
 version: "2"
-cloud:
-    organization: ""
-    project: ""
-    hostname: ""
-servers: []
-sql: []
-overrides:
-    go: null
-plugins: []
-rules: []
-options: {}
