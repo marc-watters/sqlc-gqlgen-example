@@ -13,7 +13,7 @@ import (
 
 // Agent is the resolver for the agent field.
 func (r *authorResolver) Agent(ctx context.Context, obj *pgx.Author) (*pgx.Agent, error) {
-	panic(fmt.Errorf("not implemented: Agent - agent"))
+	return r.Repository.GetAgent(ctx, obj.AgentID)
 }
 
 // Books is the resolver for the books field.
