@@ -10,4 +10,5 @@ sql:
         out: "api/pgx"
         package: "pgx"
         sql_package: "pgx/v5"
+        emit_result_struct_pointers: true
         emit_sql_as_comment: true
