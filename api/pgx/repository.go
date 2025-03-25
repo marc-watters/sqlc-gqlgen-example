@@ -2,6 +2,7 @@ package pgx
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -47,4 +48,23 @@ func NewRepository(db *pgxpool.Pool) Repository {
 		Queries: New(db),
 		db:      db,
 	}
+}
+
+func (r *repoSvc) withTx(ctx context.Context, txFn func(*Queries) error) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+
+	q := New(tx)
+	err = txFn(q)
+	if err != nil {
+		if rbErr := tx.Rollback(ctx); rbErr != nil {
+			err = fmt.Errorf("tx failed: %v, unable to rollback: %v", err, rbErr)
+		}
+	} else {
+		err = tx.Commit(ctx)
+	}
+
+	return err
 }
