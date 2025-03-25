@@ -6,6 +6,10 @@ WHERE id = $1;
 SELECT * FROM books
 ORDER BY title;
 
+-- name: ListBooksByAuthorID :many
+SELECT books.* FROM books, book_authors
+WHERE books.id = book_authors.book_id AND book_authors.author_id = $1;
+
 -- name: CreateBook :one
 INSERT INTO books (title, description, cover)
 VALUES ($1, $2, $3)
