@@ -18,7 +18,7 @@ func (r *queryResolver) Agent(ctx context.Context, id int64) (*pgx.Agent, error)
 
 // Agents is the resolver for the agents field.
 func (r *queryResolver) Agents(ctx context.Context) ([]*pgx.Agent, error) {
-	panic(fmt.Errorf("not implemented: Agents - agents"))
+	return r.Repository.ListAgents(ctx)
 }
 
 // Author is the resolver for the author field.
