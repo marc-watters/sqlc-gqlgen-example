@@ -6,7 +6,6 @@ package gqlgen
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
@@ -38,7 +37,7 @@ func (r *queryResolver) Book(ctx context.Context, id int64) (*pgx.Book, error) {
 
 // Books is the resolver for the books field.
 func (r *queryResolver) Books(ctx context.Context) ([]*pgx.Book, error) {
-	panic(fmt.Errorf("not implemented: Books - books"))
+	return r.Repository.ListBooks(ctx)
 }
 
 // Query returns QueryResolver implementation.
