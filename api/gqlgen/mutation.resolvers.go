@@ -6,7 +6,6 @@ package gqlgen
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 
@@ -90,7 +89,7 @@ func (r *mutationResolver) UpdateBook(ctx context.Context, id int64, data model.
 
 // DeleteBook is the resolver for the deleteBook field.
 func (r *mutationResolver) DeleteBook(ctx context.Context, id int64) (*pgx.Book, error) {
-	panic(fmt.Errorf("not implemented: DeleteBook - deleteBook"))
+	return r.Repository.DeleteBook(ctx, id)
 }
 
 // Mutation returns MutationResolver implementation.
