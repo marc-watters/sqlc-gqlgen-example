@@ -10,3 +10,4 @@ sql:
         out: "api/pgx"
         package: "pgx"
         sql_package: "pgx/v5"
+        emit_sql_as_comment: true
