@@ -80,7 +80,12 @@ func (r *mutationResolver) CreateBook(ctx context.Context, data model.BookInput)
 
 // UpdateBook is the resolver for the updateBook field.
 func (r *mutationResolver) UpdateBook(ctx context.Context, id int64, data model.BookInput) (*pgx.Book, error) {
-	panic(fmt.Errorf("not implemented: UpdateBook - updateBook"))
+	return r.Repository.UpdateBook(ctx, pgx.UpdateBookParams{
+		ID:          id,
+		Title:       data.Title,
+		Description: data.Description,
+		Cover:       data.Cover,
+	}, data.AuthorIDs)
 }
 
 // DeleteBook is the resolver for the deleteBook field.
