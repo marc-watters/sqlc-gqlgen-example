@@ -13,7 +13,7 @@ import (
 
 // Agent is the resolver for the agent field.
 func (r *queryResolver) Agent(ctx context.Context, id int64) (*pgx.Agent, error) {
-	panic(fmt.Errorf("not implemented: Agent - agent"))
+	return r.Repository.GetAgent(ctx, id)
 }
 
 // Agents is the resolver for the agents field.
