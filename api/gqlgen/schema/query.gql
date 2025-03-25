@@ -1,0 +1,8 @@
+type Query {
+  agent(id: ID!): Agent
+  agents: [Agent!]!
+  author(id: ID!): Author
+  authors: [Author!]!
+  book(id: ID!): Book
+  books: [Book!]!
+}
