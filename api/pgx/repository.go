@@ -71,6 +71,30 @@ func (r *repoSvc) CreateBook(ctx context.Context, bookArg CreateBookParams, auth
 	return book, err
 }
 
+func (r *repoSvc) UpdateBook(ctx context.Context, bookArg UpdateBookParams, authorIDs []int64) (*Book, error) {
+	book := new(Book)
+	err := r.withTx(ctx, func(q *Queries) error {
+		res, err := q.UpdateBook(ctx, bookArg)
+		if err != nil {
+			return err
+		}
+		if err = q.UnsetBookAuthors(ctx, res.ID); err != nil {
+			return err
+		}
+		for _, authorID := range authorIDs {
+			if err := q.SetBookAuthor(ctx, SetBookAuthorParams{
+				BookID:   res.ID,
+				AuthorID: authorID,
+			}); err != nil {
+				return err
+			}
+		}
+		book = &res
+		return nil
+	})
+	return book, err
+}
+
 func (r *repoSvc) withTx(ctx context.Context, txFn func(*Queries) error) error {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
