@@ -2,3 +2,4 @@ version: "2"
 sql:
   - engine: "postgresql"
     schema: "database/init/*.sql"
+    queries: "database/query/*.sql"
