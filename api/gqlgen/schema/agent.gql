@@ -1,0 +1,11 @@
+type Agent {
+  id: ID!
+  name: String!
+  email: String!
+  authors: [Author!]!
+}
+
+input AgentInput {
+  name: String!
+  email: String!
+}
