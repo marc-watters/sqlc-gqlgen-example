@@ -22,7 +22,11 @@ func (r *mutationResolver) CreateAgent(ctx context.Context, data model.AgentInpu
 
 // UpdateAgent is the resolver for the updateAgent field.
 func (r *mutationResolver) UpdateAgent(ctx context.Context, id int64, data model.AgentInput) (*pgx.Agent, error) {
-	panic(fmt.Errorf("not implemented: UpdateAgent - updateAgent"))
+	return r.Repository.UpdateAgent(ctx, pgx.UpdateAgentParams{
+		ID:    id,
+		Name:  data.Name,
+		Email: data.Email,
+	})
 }
 
 // DeleteAgent is the resolver for the deleteAgent field.
