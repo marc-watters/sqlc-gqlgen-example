@@ -50,6 +50,27 @@ func NewRepository(db *pgxpool.Pool) Repository {
 	}
 }
 
+func (r *repoSvc) CreateBook(ctx context.Context, bookArg CreateBookParams, authorIDs []int64) (*Book, error) {
+	book := new(Book)
+	err := r.withTx(ctx, func(q *Queries) error {
+		res, err := q.CreateBook(ctx, bookArg)
+		if err != nil {
+			return err
+		}
+		for _, authorID := range authorIDs {
+			if err := q.SetBookAuthor(ctx, SetBookAuthorParams{
+				BookID:   res.ID,
+				AuthorID: authorID,
+			}); err != nil {
+				return err
+			}
+		}
+		book = &res
+		return nil
+	})
+	return book, err
+}
+
 func (r *repoSvc) withTx(ctx context.Context, txFn func(*Queries) error) error {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
