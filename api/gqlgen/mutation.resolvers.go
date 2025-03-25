@@ -8,6 +8,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/99designs/gqlgen/graphql"
+
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/gqlgen/model"
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
@@ -45,7 +47,21 @@ func (r *mutationResolver) CreateAuthor(ctx context.Context, data model.AuthorIn
 
 // UpdateAuthor is the resolver for the updateAuthor field.
 func (r *mutationResolver) UpdateAuthor(ctx context.Context, id int64, data model.AuthorInput) (*pgx.Author, error) {
-	panic(fmt.Errorf("not implemented: UpdateAuthor - updateAuthor"))
+	author, err := r.Repository.GetAuthor(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if !data.Website.IsSet() {
+		data.Website = graphql.OmittableOf(author.Website)
+	}
+
+	return r.Repository.UpdateAuthor(ctx, pgx.UpdateAuthorParams{
+		ID:      id,
+		Name:    data.Name,
+		Website: data.Website.Value(),
+		AgentID: data.AgentID,
+	})
 }
 
 // DeleteAuthor is the resolver for the deleteAuthor field.
