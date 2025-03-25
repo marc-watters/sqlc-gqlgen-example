@@ -66,7 +66,7 @@ func (r *mutationResolver) UpdateAuthor(ctx context.Context, id int64, data mode
 
 // DeleteAuthor is the resolver for the deleteAuthor field.
 func (r *mutationResolver) DeleteAuthor(ctx context.Context, id int64) (*pgx.Author, error) {
-	panic(fmt.Errorf("not implemented: DeleteAuthor - deleteAuthor"))
+	return r.Repository.DeleteAuthor(ctx, id)
 }
 
 // CreateBook is the resolver for the createBook field.
