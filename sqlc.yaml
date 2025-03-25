@@ -9,3 +9,4 @@ sql:
       go:
         out: "api/pgx"
         package: "pgx"
+        sql_package: "pgx/v5"
