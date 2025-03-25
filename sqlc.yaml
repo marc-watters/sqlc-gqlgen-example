@@ -8,3 +8,4 @@ sql:
     gen:
       go:
         out: "api/pgx"
+        package: "pgx"
