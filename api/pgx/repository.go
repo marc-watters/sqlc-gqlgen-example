@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	uuid "github.com/jackc/pgx-gofrs-uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -50,6 +52,28 @@ func NewRepository(db *pgxpool.Pool) Repository {
 	}
 }
 
+// Open opens a database specified by the data source name.
+// Format: host=foo port=5432 user=bar password=baz dbname=qux sslmode=disable"
+func Open(ctx context.Context, uri string) (*pgxpool.Pool, error) {
+	config, err := pgxpool.ParseConfig(uri)
+	if err != nil {
+		return nil, fmt.Errorf("error opening connection pool: %w", err)
+	}
+
+	// UUID support: https://github.com/jackc/pgx/wiki/UUID-Support
+	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		uuid.Register(conn.TypeMap())
+		return nil
+	}
+
+	pool, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		return nil, fmt.Errorf("error opening connection pool: %w", err)
+	}
+
+	return pool, nil
+}
+
 func (r *repoSvc) CreateBook(ctx context.Context, bookArg CreateBookParams, authorIDs []int64) (*Book, error) {
 	book := new(Book)
 	err := r.withTx(ctx, func(q *Queries) error {
@@ -65,7 +89,7 @@ func (r *repoSvc) CreateBook(ctx context.Context, bookArg CreateBookParams, auth
 				return err
 			}
 		}
-		book = &res
+		book = res
 		return nil
 	})
 	return book, err
@@ -89,7 +113,7 @@ func (r *repoSvc) UpdateBook(ctx context.Context, bookArg UpdateBookParams, auth
 				return err
 			}
 		}
-		book = &res
+		book = res
 		return nil
 	})
 	return book, err
