@@ -28,7 +28,7 @@ func (r *queryResolver) Author(ctx context.Context, id int64) (*pgx.Author, erro
 
 // Authors is the resolver for the authors field.
 func (r *queryResolver) Authors(ctx context.Context) ([]*pgx.Author, error) {
-	panic(fmt.Errorf("not implemented: Authors - authors"))
+	return r.Repository.ListAuthors(ctx)
 }
 
 // Book is the resolver for the book field.
