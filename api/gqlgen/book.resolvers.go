@@ -6,14 +6,13 @@ package gqlgen
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
 
 // Authors is the resolver for the authors field.
 func (r *bookResolver) Authors(ctx context.Context, obj *pgx.Book) ([]*pgx.Author, error) {
-	panic(fmt.Errorf("not implemented: Authors - authors"))
+	return r.Repository.ListAuthorsByBookID(ctx, obj.ID)
 }
 
 // Book returns BookResolver implementation.
