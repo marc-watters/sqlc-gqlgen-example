@@ -6,6 +6,10 @@ WHERE id = $1;
 SELECT * FROM authors
 ORDER BY name;
 
+-- name: ListAuthorsByAgentID :many
+SELECT authors.* FROM authors, agents
+WHERE agents.id = authors.agent_id AND authors.agent_id = $1;
+
 -- name: CreateAuthor :one
 INSERT INTO authors (name, website, agent_id)
 VALUES ($1, $2, $3)
