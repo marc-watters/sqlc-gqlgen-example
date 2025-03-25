@@ -36,7 +36,11 @@ func (r *mutationResolver) DeleteAgent(ctx context.Context, id int64) (*pgx.Agen
 
 // CreateAuthor is the resolver for the createAuthor field.
 func (r *mutationResolver) CreateAuthor(ctx context.Context, data model.AuthorInput) (*pgx.Author, error) {
-	panic(fmt.Errorf("not implemented: CreateAuthor - createAuthor"))
+	return r.Repository.CreateAuthor(ctx, pgx.CreateAuthorParams{
+		Name:    data.Name,
+		Website: data.Website.Value(),
+		AgentID: data.AgentID,
+	})
 }
 
 // UpdateAuthor is the resolver for the updateAuthor field.
