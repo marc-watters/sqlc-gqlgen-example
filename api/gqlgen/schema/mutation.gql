@@ -1,0 +1,11 @@
+type Mutation {
+  createAgent(data: AgentInput!): Agent!
+  updateAgent(id: ID!, data: AgentInput!): Agent!
+  deleteAgent(id: ID!): Agent!
+  createAuthor(data: AuthorInput!): Author!
+  updateAuthor(id: ID!, data: AuthorInput!): Author!
+  deleteAuthor(id: ID!): Author!
+  createBook(data: BookInput!): Book!
+  updateBook(id: ID!, data: BookInput!): Book!
+  deleteBook(id: ID!): Book!
+}
