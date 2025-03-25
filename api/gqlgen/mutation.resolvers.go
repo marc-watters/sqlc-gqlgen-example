@@ -14,7 +14,10 @@ import (
 
 // CreateAgent is the resolver for the createAgent field.
 func (r *mutationResolver) CreateAgent(ctx context.Context, data model.AgentInput) (*pgx.Agent, error) {
-	panic(fmt.Errorf("not implemented: CreateAgent - createAgent"))
+	return r.Repository.CreateAgent(ctx, pgx.CreateAgentParams{
+		Name:  data.Name,
+		Email: data.Email,
+	})
 }
 
 // UpdateAgent is the resolver for the updateAgent field.
