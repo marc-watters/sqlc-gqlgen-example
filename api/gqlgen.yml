@@ -28,7 +28,7 @@ resolver:
 # omit_slice_element_pointers: false
 
 # Optional: turn on to exclude root models such as Query and Mutation from the generated models file.
-# omit_root_models: false
+omit_root_models: true
 
 # Optional: turn off to make struct-type struct fields not use pointers
 # e.g. type Thing struct { FieldA OtherThing } instead of { FieldA *OtherThing }
