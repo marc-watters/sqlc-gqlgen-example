@@ -35,7 +35,7 @@ omit_root_models: true
 # struct_fields_always_pointers: true
 
 # Optional: wrap nullable input fields with Omittable
-# nullable_input_omittable: true
+nullable_input_omittable: true
 
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
