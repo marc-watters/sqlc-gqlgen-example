@@ -1,5 +1,7 @@
 package dataloaders
 
+//go:generate dataloaden AgentLoader int64 *github.com/marc-watters/sqlc-gqlgen-example/v2/pgx.Agent
+
 import (
 	"context"
 
