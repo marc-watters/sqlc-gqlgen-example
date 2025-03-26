@@ -31,6 +31,11 @@ func main() {
 
 	// initialize repository
 	repoSvc := pgx.NewRepository(db)
+
+	// initialize router
+	router := gin.Default()
+	router.GET("/", playgroundHandler())
+	router.POST("/query", graphqlHandler(repoSvc))
 }
 
 // Defining the Graphql handler
