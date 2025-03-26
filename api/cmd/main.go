@@ -1,6 +1,10 @@
 package main
 
 import (
+	"context"
+	"log"
+	"os"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
@@ -12,6 +16,19 @@ import (
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/gqlgen"
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
+
+const DB_URI = "host=${DB_HOST} port=${DB_PORT} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable"
+
+func main() {
+	ctx := context.Background()
+
+	// initialize database
+	db, err := pgx.Open(ctx, os.ExpandEnv(DB_URI))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+}
 
 // Defining the Graphql handler
 func graphqlHandler(repoService pgx.Repository) gin.HandlerFunc {
