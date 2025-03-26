@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -17,7 +19,10 @@ import (
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
 
-const DB_URI = "host=${DB_HOST} port=${DB_PORT} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable"
+const (
+	API_URL = "${API_HOST}:${API_PORT}"
+	DB_URI  = "host=${DB_HOST} port=${DB_PORT} user=${DB_USER} password=${DB_PASS} dbname=${DB_NAME} sslmode=disable"
+)
 
 func main() {
 	ctx := context.Background()
@@ -36,6 +41,19 @@ func main() {
 	router := gin.Default()
 	router.GET("/", playgroundHandler())
 	router.POST("/query", graphqlHandler(repoSvc))
+
+	// initialize server
+	server := &http.Server{
+		Addr:           os.ExpandEnv(API_URL),
+		Handler:        router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Defining the Graphql handler
