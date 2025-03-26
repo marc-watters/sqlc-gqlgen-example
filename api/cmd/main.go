@@ -28,6 +28,9 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	// initialize repository
+	repoSvc := pgx.NewRepository(db)
 }
 
 // Defining the Graphql handler
