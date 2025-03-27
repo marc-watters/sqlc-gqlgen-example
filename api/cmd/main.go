@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/vektah/gqlparser/v2/ast"
 
+	"github.com/marc-watters/sqlc-gqlgen-example/v2/dataloaders"
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/gqlgen"
 	"github.com/marc-watters/sqlc-gqlgen-example/v2/pgx"
 )
@@ -37,10 +38,14 @@ func main() {
 	// initialize repository
 	repoSvc := pgx.NewRepository(db)
 
+	// initialize the dataloaders
+	dl := dataloaders.NewRetriever()
+
 	// initialize router
 	router := gin.Default()
+	router.Use(dataloaders.MWareDataLoader(repoSvc))
 	router.GET("/", playgroundHandler())
-	router.POST("/query", graphqlHandler(repoSvc))
+	router.POST("/query", graphqlHandler(repoSvc, dl))
 
 	// initialize server
 	server := &http.Server{
