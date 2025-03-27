@@ -10,6 +10,14 @@ ORDER BY name;
 SELECT authors.* FROM authors, agents
 WHERE agents.id = authors.agent_id AND authors.agent_id = $1;
 
+-- name: ListAuthorsByAgentIDs :many
+SELECT authors.* FROM authors, agents
+WHERE authors.agent_id = agents.id AND agents.id = ANY($1::bigint[]);
+
+-- name: ListAuthorsByBookID :many
+SELECT authors.* FROM authors, book_authors
+WHERE authors.id = book_authors.author_id AND book_authors.book_id = $1;
+
 -- name: CreateAuthor :one
 INSERT INTO authors (name, website, agent_id)
 VALUES ($1, $2, $3)
