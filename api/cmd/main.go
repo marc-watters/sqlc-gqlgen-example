@@ -57,12 +57,13 @@ func main() {
 }
 
 // Defining the Graphql handler
-func graphqlHandler(repoService pgx.Repository) gin.HandlerFunc {
+func graphqlHandler(repoService pgx.Repository, dl dataloaders.Retriever) gin.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
 	h := handler.New(gqlgen.NewExecutableSchema(gqlgen.Config{
 		Resolvers: &gqlgen.Resolver{
-			Repository: repoService,
+			Repository:  repoService,
+			DataLoaders: dl,
 		},
 	}))
 
