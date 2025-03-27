@@ -12,7 +12,7 @@ import (
 
 // Agent is the resolver for the agent field.
 func (r *authorResolver) Agent(ctx context.Context, obj *pgx.Author) (*pgx.Agent, error) {
-	return r.Repository.GetAgent(ctx, obj.AgentID)
+	return r.DataLoaders.Retrieve(ctx).AgentByAuthorID.Load(obj.ID)
 }
 
 // Books is the resolver for the books field.
