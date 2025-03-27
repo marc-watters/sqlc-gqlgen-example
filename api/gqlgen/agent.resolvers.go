@@ -12,7 +12,7 @@ import (
 
 // Authors is the resolver for the authors field.
 func (r *agentResolver) Authors(ctx context.Context, obj *pgx.Agent) ([]*pgx.Author, error) {
-	return r.Repository.ListAuthorsByAgentID(ctx, obj.ID)
+	return r.DataLoaders.Retrieve(ctx).AuthorsByAgentID.Load(obj.ID)
 }
 
 // Agent returns AgentResolver implementation.
