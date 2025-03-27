@@ -17,6 +17,7 @@ type (
 	Loaders struct {
 		AgentByAuthorID  *AgentLoader
 		AuthorsByAgentID *AuthorSliceLoader
+		AuthorsByBookID  *AuthorSliceLoader
 	}
 )
 
@@ -26,6 +27,7 @@ func newLoaders(ctx context.Context, repoSvc pgx.Repository) *Loaders {
 	return &Loaders{
 		AgentByAuthorID:  newAgentByAuthorID(ctx, repoSvc),
 		AuthorsByAgentID: newAuthorsByAgentID(ctx, repoSvc),
+		AuthorsByBookID:  newAuthorsByBookID(ctx, repoSvc),
 	}
 }
 
@@ -77,6 +79,36 @@ func newAuthorsByAgentID(ctx context.Context, repo pgx.Repository) *AuthorSliceL
 			result := make([][]*pgx.Author, len(agentIDs))
 			for i, agentID := range agentIDs {
 				result[i] = groupByAgentID[agentID]
+			}
+			return result, nil
+		},
+	})
+}
+
+func newAuthorsByBookID(ctx context.Context, repo pgx.Repository) *AuthorSliceLoader {
+	return NewAuthorSliceLoader(AuthorSliceLoaderConfig{
+		MaxBatch: 100,
+		Wait:     5 * time.Millisecond,
+		Fetch: func(bookIDs []int64) ([][]*pgx.Author, []error) {
+			// db query
+			res, err := repo.ListAuthorsByBookIDs(ctx, bookIDs)
+			if err != nil {
+				return nil, []error{err}
+			}
+			// group
+			groupByBookID := make(map[int64][]*pgx.Author, len(bookIDs))
+			for _, r := range res {
+				groupByBookID[r.BookID] = append(groupByBookID[r.BookID], &pgx.Author{
+					ID:      r.ID,
+					Name:    r.Name,
+					Website: r.Website,
+					AgentID: r.AgentID,
+				})
+			}
+			// order
+			result := make([][]*pgx.Author, len(bookIDs))
+			for i, bookID := range bookIDs {
+				result[i] = groupByBookID[bookID]
 			}
 			return result, nil
 		},
