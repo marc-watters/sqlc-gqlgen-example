@@ -10,6 +10,10 @@ ORDER BY title;
 SELECT books.* FROM books, book_authors
 WHERE books.id = book_authors.book_id AND book_authors.author_id = $1;
 
+-- name: ListBooksByAuthorIDs :many
+SELECT books.*, book_authors.author_id FROM books, book_authors
+WHERE book_authors.book_id = books.id AND book_authors.author_id = ANY($1::bigint[]);
+
 -- name: CreateBook :one
 INSERT INTO books (title, description, cover)
 VALUES ($1, $2, $3)
