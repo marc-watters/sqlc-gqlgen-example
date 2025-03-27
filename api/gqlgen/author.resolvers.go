@@ -17,7 +17,7 @@ func (r *authorResolver) Agent(ctx context.Context, obj *pgx.Author) (*pgx.Agent
 
 // Books is the resolver for the books field.
 func (r *authorResolver) Books(ctx context.Context, obj *pgx.Author) ([]*pgx.Book, error) {
-	return r.Repository.ListBooksByAuthorID(ctx, obj.ID)
+	return r.DataLoaders.Retrieve(ctx).BooksByAuthorID.Load(obj.ID)
 }
 
 // Author returns AuthorResolver implementation.
